@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#c9a227"/>
+  
+  <title>MX Biz News — Noticias de Negocios México</title>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" href="icons/icon-192.png" type="image/png"/>
+  <link rel="apple-touch-icon" href="icons/icon-192.png"/>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">MX<span>Biz</span>News</a>
+    <span class="header-badge">🇲🇽 México · Business · The News API</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-tag">Explorador de Noticias</div>
+      <h1>Negocios en<br/><em>México</em></h1>
+      <p>Consulta noticias de negocios, mercados y empresas mexicanas usando 6 endpoints distintos de <strong>The News API</strong>. Selecciona una categoría del menú y filtra la información que necesitas.</p>
+      <div class="hero-meta">
+        <div class="meta-item">
+          <span class="meta-label">País</span>
+          <span class="meta-value">México (mx)</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Categoría</span>
+          <span class="meta-value">Business</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Endpoints</span>
+          <span class="meta-value">6 disponibles</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Fuente</span>
+          <span class="meta-value">thenewsapi.com</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+
+    <!-- API KEY BANNER -->
+    <div class="key-banner">
+      <span class="key-icon">🔑</span>
+      <div class="key-text">
+        <h3>API Key requerida</h3>
+        <p>Obtén tu llave gratuita en <a href="https://www.thenewsapi.com/register" target="_blank">thenewsapi.com/register</a> e ingrésala aquí. Se guardará en esta sesión.</p>
+      </div>
+      <div class="key-input-wrap">
+        <input type="text" id="apiKeyInput" class="key-input" placeholder="Pega tu API key aquí..." autocomplete="off" spellcheck="false" />
+        <button class="btn-save" onclick="saveKey()">Guardar</button>
+      </div>
+    </div>
+
+    <div class="section-title">Menú principal</div>
+    <p class="section-sub">Elige el tipo de consulta que deseas realizar sobre noticias de negocios en México.</p>
+
+    <div class="menu-grid">
+      <button class="menu-btn" onclick="showPanel('ep1')" id="btn-ep1">
+        <span class="menu-num">01</span>
+        <span class="menu-icon">🔍</span>
+        <span class="menu-label">Búsqueda General</span>
+        <span class="menu-desc">/v1/news/all — buscar por palabra clave</span>
+      </button>
+      <button class="menu-btn" onclick="showPanel('ep2')" id="btn-ep2">
+        <span class="menu-num">02</span>
+        <span class="menu-icon">🏆</span>
+        <span class="menu-label">Titulares Top</span>
+        <span class="menu-desc">/v1/news/top — las más destacadas</span>
+      </button>
+      <button class="menu-btn" onclick="showPanel('ep3')" id="btn-ep3">
+        <span class="menu-num">03</span>
+        <span class="menu-icon">⚡</span>
+        <span class="menu-label">Noticias Recientes</span>
+        <span class="menu-desc">/v1/news/all — publicadas hoy</span>
+      </button>
+      <button class="menu-btn" onclick="showPanel('ep4')" id="btn-ep4">
+        <span class="menu-num">04</span>
+        <span class="menu-icon">🌐</span>
+        <span class="menu-label">Por Idioma</span>
+        <span class="menu-desc">/v1/news/all — filtrar por idioma</span>
+      </button>
+      <button class="menu-btn" onclick="showPanel('ep5')" id="btn-ep5">
+        <span class="menu-num">05</span>
+        <span class="menu-icon">📅</span>
+        <span class="menu-label">Rango de Fechas</span>
+        <span class="menu-desc">/v1/news/all — entre dos fechas</span>
+      </button>
+      <button class="menu-btn" onclick="showPanel('ep6')" id="btn-ep6">
+        <span class="menu-num">06</span>
+        <span class="menu-icon">📰</span>
+        <span class="menu-label">Fuentes Disponibles</span>
+        <span class="menu-desc">/v1/news/sources — medios de México</span>
+      </button>
+    </div>
+
+    <!-- Panel 1 -->
+    <div class="query-panel" id="panel-ep1">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">🔍 Búsqueda General de Noticias</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Busca artículos de negocios en México por palabra clave.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/all</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Palabra clave *</label>
+          <input type="text" id="ep1-search" placeholder="ej: PEMEX, inversión, BBVA" />
+        </div>
+        <div class="field">
+          <label>Resultados (máx. 10)</label>
+          <select id="ep1-limit">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Ordenar por</label>
+          <select id="ep1-sort">
+            <option value="published_at">Fecha publicación</option>
+            <option value="relevance_score">Relevancia</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp1()" id="sbtn-ep1">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <!-- Panel 2 -->
+    <div class="query-panel" id="panel-ep2">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">🏆 Titulares Destacados</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Las noticias de negocios más importantes de México en este momento.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/top</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Idioma</label>
+          <select id="ep2-lang">
+            <option value="es" selected>Español (es)</option>
+            <option value="en">Inglés (en)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Resultados</label>
+          <select id="ep2-limit">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp2()" id="sbtn-ep2">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <!-- Panel 3 -->
+    <div class="query-panel" id="panel-ep3">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">⚡ Noticias Recientes</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Los últimos artículos de negocios publicados recientemente.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/all</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Tema específico (opcional)</label>
+          <input type="text" id="ep3-search" placeholder="ej: fintech, exportaciones" />
+        </div>
+        <div class="field">
+          <label>Resultados</label>
+          <select id="ep3-limit">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp3()" id="sbtn-ep3">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <!-- Panel 4 -->
+    <div class="query-panel" id="panel-ep4">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">🌐 Filtrar por Idioma</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Noticias de México en el idioma que prefieras.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/all</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Idioma *</label>
+          <select id="ep4-lang">
+            <option value="es" selected>Español (es)</option>
+            <option value="en">Inglés (en)</option>
+            <option value="pt">Portugués (pt)</option>
+            <option value="fr">Francés (fr)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Palabra clave (opcional)</label>
+          <input type="text" id="ep4-search" placeholder="ej: economy, bolsa" />
+        </div>
+        <div class="field">
+          <label>Resultados</label>
+          <select id="ep4-limit">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp4()" id="sbtn-ep4">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <!-- Panel 5 -->
+    <div class="query-panel" id="panel-ep5">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">📅 Consulta por Rango de Fechas</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Encuentra noticias de negocios en México dentro de un período específico.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/all</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Fecha inicio (published_after) *</label>
+          <input type="date" id="ep5-from" />
+        </div>
+        <div class="field">
+          <label>Fecha fin (published_before) *</label>
+          <input type="date" id="ep5-to" />
+        </div>
+        <div class="field">
+          <label>Palabra clave (opcional)</label>
+          <input type="text" id="ep5-search" placeholder="ej: PIB, banxico" />
+        </div>
+        <div class="field">
+          <label>Resultados</label>
+          <select id="ep5-limit">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp5()" id="sbtn-ep5">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <!-- Panel 6 -->
+    <div class="query-panel" id="panel-ep6">
+      <div class="panel-head">
+        <div>
+          <div class="panel-title">📰 Fuentes de Noticias Disponibles</div>
+          <p style="font-size:.8rem;color:var(--muted);margin-top:.3rem;">Explora los medios de comunicación de México indexados en la API.</p>
+        </div>
+        <span class="endpoint-badge">GET /v1/news/sources</span>
+      </div>
+      <div class="fields-row">
+        <div class="field">
+          <label>Idioma</label>
+          <select id="ep6-lang">
+            <option value="es" selected>Español (es)</option>
+            <option value="en">Inglés (en)</option>
+            <option value="">Todos</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn-search" onclick="fetchEp6()" id="sbtn-ep6">
+        <div class="spinner"></div>
+        <span class="btn-text"></span>
+      </button>
+    </div>
+
+    <div id="results-area"></div>
+
+  </div>
+</main>
+
+<footer>
+  <p>MX Biz News · Datos de <a href="https://www.thenewsapi.com" target="_blank">thenewsapi.com</a> · Hecho por: Lissa Juliana Ramírez Acevedo · Categoría: Business</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
